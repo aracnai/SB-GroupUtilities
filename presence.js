@@ -84,6 +84,12 @@ export async function getCurrentParticipants() {
 	if (!extensionSettings.includeMuted)
 		active = active.filter(char => !group.disabled_members.includes(char));
 
+	if (!chat_metadata.ignore_presence) chat_metadata.ignore_presence = [];
+
+	chat_metadata.ignore_presence.forEach(char => {
+		if (active.includes(char)) active.splice(active.indexOf(char), 1);
+	});
+
 	return { members: group.members, present: active };
 }
 
@@ -277,7 +283,8 @@ async function onGroupMemberDrafted(type, charId) {
 
 	if (
 		type == "impersonate" ||
-		isUserContinue
+		isUserContinue ||
+		chat_metadata.ignore_presence?.includes(char)
 	) {
         toggleVisibilityAllMessages(true);
 	} else {
