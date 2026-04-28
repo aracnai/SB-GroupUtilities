@@ -1,0 +1,13 @@
+{
+    "display_name": "SillyBunny Group Utilities",
+    "loading_order": 1,
+    "requires": [],
+    "optional": [],
+    "js": "index.js",
+    "css": "style.css",
+    "generate_interceptor": "groupUtils_generationInterceptor",
+    "author": "Bundled from Presence, GroupGreetings, st-group-utils, and GroupSendAs",
+    "version": "0.1.0",
+    "homePage": "https://github.com/platberlitz/SillyBunny",
+    "auto_update": false
+}
