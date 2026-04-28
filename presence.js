@@ -206,6 +206,10 @@ export async function onChatChanged() {
 	if (!isActive()) return;
 	await addPresenceTrackerToMessages(true);
 
+	$("#rm_group_members .group_member").each((index, element) => {
+		updatePresenceTrackingButton($(element));
+	});
+
 	$(document).on("mouseup touchend", "#show_more_messages", addPresenceTrackerToMessages);
 }
 
@@ -327,6 +331,24 @@ async function onGroupMemberDrafted(type, charId) {
 	}
 }
 
+async function togglePresenceTracking(e) {
+	const target = $(e.target).closest(".group_member");
+	const charId = target.data("chid");
+	const charAvatar = characters[charId].avatar;
+
+	const ignorePresence = chat_metadata.ignore_presence ?? [];
+
+	if (!ignorePresence.includes(charAvatar)) {
+		if (!chat_metadata.ignore_presence) chat_metadata.ignore_presence = [];
+		chat_metadata.ignore_presence.push(charAvatar);
+	} else {
+		chat_metadata.ignore_presence = ignorePresence.filter((c) => c != charAvatar);
+	}
+
+	saveChatDebounced();
+	updatePresenceTrackingButton(target);
+}
+
 function toggleMessagesManuallyHiddenFlag(e) {
 	const $mess = $(e.target).closest(".mes");
 	const mesId = $mess.attr("mesid");
@@ -357,19 +379,28 @@ function initExtensionSettings() {
 	extensionSettings = context.extensionSettings[extensionName];
 }
 
+async function updatePresenceTrackingButton(member) {
+	if (!isActive()) return;
+
+	const target = member.find(".ignore_presence_toggle");
+	const charId = member.data("chid");
+
+	if (!chat_metadata?.ignore_presence?.includes(characters[charId].avatar)) {
+		target.removeClass("active");
+	} else {
+		target.addClass("active");
+	}
+}
+
 jQuery(async () => {
 	const bundleState = window.SillyBunnyGroupUtilities ??= {};
 	if (bundleState.presenceLoaded) return;
 	bundleState.presenceLoaded = true;
 
-	initExtensionSettings();
-
+	$("#group_member_template .ignore_presence_toggle, #rm_group_members .ignore_presence_toggle").remove();
 	$('#chat').off('click.sbuPresence', '.mes_button.mes_hide, .mes_button.mes_unhide').on('click.sbuPresence', '.mes_button.mes_hide, .mes_button.mes_unhide', toggleMessagesManuallyHiddenFlag);
 
-	bundleState.presenceObserver?.disconnect?.();
-	bundleState.presenceObserver = null;
-	bundleState.presenceSpeakerObserver?.disconnect?.();
-	bundleState.presenceSpeakerObserver = null;
+	initExtensionSettings();
 
     eventListeners.startListeners();
     slashCommands.registerSlashCommands();
