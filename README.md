@@ -30,7 +30,6 @@ Install through SillyBunny's built-in extension installer:
 3. Use the extension installer.
 4. Paste this repository URL.
 5. Install and enable **SillyBunny Group Utilities**.
-6. Restart or hard refresh SillyBunny after installation.
 
 Do not install the four original standalone extensions alongside this bundle. This extension already includes their bundled behavior, and running both can cause duplicate buttons, duplicate event handlers, or repeated slash command registration.
 
