@@ -1,6 +1,5 @@
-import {characters, chat, chat_metadata, eventSource, event_types, saveChatDebounced, saveSettingsDebounced, this_chid} from "../../../../script.js";
+import {characters, chat, chat_metadata, eventSource, event_types, refreshSwipeButtons, saveChatDebounced, saveSettingsDebounced, this_chid} from "../../../../script.js";
 import {groups, is_group_generating, selected_group} from "../../../../scripts/group-chats.js";
-import {hideChatMessageRange} from "../../../chats.js";
 import {extension_settings} from "../../../extensions.js";
 import * as eventListeners from "./src/js/eventListeners.js";
 import * as slashCommands from "./src/js/slashCommands.js";
@@ -229,6 +228,26 @@ export async function onGenerationAfterCommands(type, config, dryRun) {
 	eventSource.once(event_types.GENERATION_STOPPED,stopHandler);
 }
 
+function setMessageRangeVisibility(start, end, unhide) {
+	if (isNaN(start)) return;
+	if (end === undefined || end === null || isNaN(end)) end = start;
+
+	const hide = !unhide;
+
+	for (let messageId = start; messageId <= end; messageId++) {
+		const message = chat[messageId];
+		if (!message) continue;
+
+		message.is_system = hide;
+
+		const messageBlock = $(`.mes[mesid="${messageId}"]`);
+		if (!messageBlock.length) continue;
+		messageBlock.attr("is_system", String(hide));
+	}
+
+	refreshSwipeButtons();
+}
+
 export async function toggleVisibilityAllMessages(state = true) {
 	if (!isActive()) return;
 
@@ -259,7 +278,7 @@ export async function toggleVisibilityAllMessages(state = true) {
 	});
 
 	for (const id_chunk of message_id_chunks) {
-		hideChatMessageRange(id_chunk.start, id_chunk.end, state);
+		setMessageRangeVisibility(id_chunk.start, id_chunk.end, state);
 	}
 }
 
@@ -321,12 +340,12 @@ async function onGroupMemberDrafted(type, charId) {
         });
 
 		for (const id_chunk of message_id_chunks) {
-			hideChatMessageRange(id_chunk.start, id_chunk.end, true);
+			setMessageRangeVisibility(id_chunk.start, id_chunk.end, true);
 		}
 
         if (extensionSettings.seeLast) {
             const lastMessageID = chat.length - 1;
-            hideChatMessageRange(lastMessageID, lastMessageID, true);
+            setMessageRangeVisibility(lastMessageID, lastMessageID, true);
         }
 	}
 }
