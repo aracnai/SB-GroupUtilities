@@ -83,9 +83,9 @@ export async function getCurrentParticipants() {
 	if (!extensionSettings.includeMuted)
 		active = active.filter(char => !group.disabled_members.includes(char));
 
-	if (!chat_metadata.ignore_presence) chat_metadata.ignore_presence = [];
+	const ignoredPresence = Array.isArray(chat_metadata.ignore_presence) ? chat_metadata.ignore_presence : [];
 
-	chat_metadata.ignore_presence.forEach(char => {
+	ignoredPresence.forEach(char => {
 		if (active.includes(char)) active.splice(active.indexOf(char), 1);
 	});
 
@@ -120,7 +120,8 @@ export async function onNewMessage(mesId) {
 		}
 	}
 
-	await saveChatDebounced();
+	// Let SillyBunny's normal send/generation save persist automatic presence.
+	// Starting a second chat save here can race group-chat JSONL writes.
 }
 
 export async function addPresenceTrackerToMessages(refresh) {
@@ -142,11 +143,7 @@ export async function addPresenceTrackerToMessages(refresh) {
         const mesId = $(element).attr("mesid");
         const mes = chat[mesId];
 
-        if (mes.present == undefined)
-            mes.present = [];
-        else mes.present = [...new Set(mes.present)];
-
-        const mesPresence = mes.present;
+        const mesPresence = Array.isArray(mes.present) ? [...new Set(mes.present)] : [];
         const members = (await getCurrentParticipants()).members;
         const trackerMembers = members.concat(mesPresence.filter((m) => !members.includes(m))).sort();
         const presenceTracker = $('<div class="mes_presence_tracker"></div>');

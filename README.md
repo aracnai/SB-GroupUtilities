@@ -2,7 +2,7 @@
 
 SillyBunny Group Utilities is a bundled fork of four group-chat focused SillyTavern extensions, adapted to work together as one SillyBunny extension.
 
-This project exists to make group chats in [SillyBunny](https://github.com/platberlitz/SillyBunny) smoother by combining presence tracking, group-specific greetings, shared group context utilities, and quick `/sendas` support without requiring users to install and manage several separate extensions.
+This project exists to make group chats in [SillyBunny](https://github.com/platberlitz/SillyBunny) smoother by combining group-specific greetings, shared group context utilities, and quick `/sendas` support without requiring users to install and manage several separate extensions.
 
 ## Bundled Extensions
 
@@ -15,7 +15,6 @@ This extension is based on and credits the following upstream projects:
 
 ## Features
 
-- Presence tracking for group chats, so characters can remember messages they were present for.
 - Group-only greetings for character cards, with random or manual selection modes.
 - Group utility prompts that can share character information and group notes during generation.
 - Quick group member SendAs button that inserts a `/sendas name="Character"` template.
@@ -30,6 +29,7 @@ Install through SillyBunny's built-in extension installer:
 3. Use the extension installer.
 4. Paste this repository URL.
 5. Install and enable **SillyBunny Group Utilities**.
+6. Restart or hard refresh SillyBunny after installation.
 
 Do not install the four original standalone extensions alongside this bundle. This extension already includes their bundled behavior, and running both can cause duplicate buttons, duplicate event handlers, or repeated slash command registration.
 
@@ -39,26 +39,10 @@ This is not a direct drop-in zip of the original extensions. It is a compatibili
 
 - The four extensions load from one manifest and one extension entry.
 - Member-row controls are coordinated so they do not fight SillyBunny's **Model Override** field.
-- The original Presence member-list **Ignore Presence** button is intentionally removed from this bundle to keep SillyBunny's member controls stable.
-- Presence settings, group utility settings, group greetings, and SendAs behavior remain available from the bundled extension.
+- Presence is currently quarantined and does not load at runtime. The bundled Presence code is retained for a future safer rewrite, but its event listeners, chat mutations, and slash commands are disabled in this release.
+- Group utility settings, group greetings, and SendAs behavior remain available from the bundled extension.
 
 ## Usage
-
-### Presence
-
-Presence activates in group chats. New messages receive presence data showing which group members were present for that message. Hovering over a message's presence tracker expands the icons so you can manually adjust who remembers that message.
-
-Presence also includes slash commands from the original extension:
-
-- `/presenceForget`
-- `/presenceForgetAll`
-- `/presenceRemember`
-- `/presenceRememberAll`
-- `/presenceReplace`
-- `/presenceCopy`
-- `/presenceLockHiddenMessages`
-- `/presenceForceAllPresent`
-- `/presenceForceNonePresent`
 
 ### Group Greetings
 

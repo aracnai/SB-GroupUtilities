@@ -20,7 +20,8 @@ jQuery(async () => {
         }
     });
 
-    await loadBundledModule("presence", async () => import("./presence.js"));
+    // Presence is quarantined until it can avoid mutating live chat messages
+    // during group generation/swipes.
     await loadBundledModule("group-utils", async () => import("./groupUtils.js"));
     await loadBundledModule("group-send-as", async () => import("./groupSendAs.js"));
 
