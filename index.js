@@ -6,8 +6,12 @@ async function loadBundledModule(name, loader) {
     if (bundleState.loadedModules?.has(name)) return;
 
     bundleState.loadedModules ??= new Set();
-    await loader();
-    bundleState.loadedModules.add(name);
+    try {
+        await loader();
+        bundleState.loadedModules.add(name);
+    } catch (error) {
+        console.error(`[SillyBunny Group Utilities] Failed to load ${name}`, error);
+    }
 }
 
 jQuery(async () => {

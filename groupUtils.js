@@ -1,4 +1,4 @@
-import { saveSettingsDebounced, characters, setExtensionPrompt, extension_prompt_roles, extension_prompt_types } from "../../../../script.js";
+import { saveSettingsDebounced, characters, setExtensionPrompt } from "../../../../script.js";
 import { extension_settings, getContext } from "../../../extensions.js";
 import { groups } from "../../../group-chats.js";
 import { MacrosParser } from '../../../macros.js';
@@ -9,6 +9,12 @@ import { onRearrangeChat } from "./height_assistance.js";
 // Keep track of where your extension is located, name should match repo name
 const extensionName = "st-group-utils";
 const EXTENSION_PROMPT_KEY = "ub_grouputils"
+const EXTENSION_PROMPT_TYPES = {
+  IN_CHAT: 1,
+}
+const EXTENSION_PROMPT_ROLES = {
+  SYSTEM: 0,
+}
 const extensionFolderPath = "scripts/extensions/third-party/SillyBunny-GroupUtilities";
 const settings = {
   char_position: 0,
@@ -115,7 +121,7 @@ async function getText(text) {
 }
 
 function clearGroupUtilsPrompt() {
-  setExtensionPrompt(EXTENSION_PROMPT_KEY, '', extension_prompt_types.IN_CHAT, 0);
+  setExtensionPrompt(EXTENSION_PROMPT_KEY, '', EXTENSION_PROMPT_TYPES.IN_CHAT, 0);
 }
 
 async function rearrangeChat() {
@@ -175,17 +181,18 @@ async function rearrangeChat() {
       pair.push(heightNotes.join("\n"));
     }
     if (pair.length > 0) {
-      const position = Number(extension_settings[extensionName].position ?? extension_prompt_types.IN_CHAT);
+      const fallbackPosition = EXTENSION_PROMPT_TYPES.IN_CHAT;
+      const position = Number(extension_settings[extensionName].position ?? fallbackPosition);
       const depth = Number(extension_settings[extensionName].depth ?? settings.depth);
       const includeWorldInfo = Boolean(extension_settings[extensionName].include_wi);
 
       setExtensionPrompt(
         EXTENSION_PROMPT_KEY,
         pair.join("\n"),
-        Number.isFinite(position) ? position : extension_prompt_types.IN_CHAT,
+        Number.isFinite(position) ? position : fallbackPosition,
         Number.isFinite(depth) ? depth : settings.depth,
         includeWorldInfo,
-        extension_prompt_roles.SYSTEM,
+        EXTENSION_PROMPT_ROLES.SYSTEM,
       );
       console.log("Group utility prompt updated!", pair);
     } else {

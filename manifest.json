@@ -7,7 +7,7 @@
     "css": "style.css",
     "generate_interceptor": "groupUtils_generationInterceptor",
     "author": "Bundled from Presence, GroupGreetings, st-group-utils, and GroupSendAs",
-    "version": "0.1.5",
+    "version": "0.1.7",
     "homePage": "https://github.com/platberlitz/SillyBunny",
     "auto_update": false
 }
