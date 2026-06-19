@@ -40,6 +40,7 @@ This is not a direct drop-in zip of the original extensions. It is a compatibili
 - The four extensions load from one manifest and one extension entry.
 - Member-row controls are coordinated so they do not fight SillyBunny's **Model Override** field.
 - Presence is currently quarantined and does not load at runtime. The bundled Presence code is retained for a future safer rewrite, but its event listeners, chat mutations, and slash commands are disabled in this release.
+- Group utility notes are injected through SillyBunny's extension-prompt API instead of mutating the live generation chat array.
 - Group utility settings, group greetings, and SendAs behavior remain available from the bundled extension.
 
 ## Usage

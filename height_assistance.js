@@ -69,12 +69,12 @@ function getGroup(groupId){
   return group
 }
 
-export async function onRearrangeChat(chat){
+export async function onRearrangeChat(){
     const context = getContext();
     const group = getGroup(context.groupId);
     const generating_name = context.name2;
-    if (!group) return;
-    if (!extension_settings[extensionName].share_character_info) return;
+    if (!group) return [];
+    if (!extension_settings[extensionName].share_character_info) return [];
     const generatingHeight = await (new Promise((resolve,reject)=>{
         const character = getCharacterByName(generating_name);
         if (character){
@@ -109,14 +109,8 @@ export async function onRearrangeChat(chat){
     });
     await Promise.all(descriptionPromises);
     if (system_notes.length > 0) {
-      const systemNote = {
-        "name": "System",
-        "is_user": false,
-        "is_system": "",
-        "send_date": new Date(Date.now()).toString(),
-        "mes": system_notes.join("\n"),
-      };
-      chat.splice(chat.length - 1, 0, systemNote);
-      console.log(`Height difference detected. Chat Modified using notes:\n- ${system_notes.join("\n- ")}`)
+      console.log(`Height difference detected. Adding extension prompt notes:\n- ${system_notes.join("\n- ")}`)
     }
+
+    return system_notes;
 }

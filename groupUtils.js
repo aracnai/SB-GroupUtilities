@@ -1,4 +1,4 @@
-import { saveSettingsDebounced, characters, setExtensionPrompt, MAX_INJECTION_DEPTH } from "../../../../script.js";
+import { saveSettingsDebounced, characters, setExtensionPrompt, extension_prompt_roles, extension_prompt_types } from "../../../../script.js";
 import { extension_settings, getContext } from "../../../extensions.js";
 import { groups } from "../../../group-chats.js";
 import { MacrosParser } from '../../../macros.js';
@@ -9,7 +9,6 @@ import { onRearrangeChat } from "./height_assistance.js";
 // Keep track of where your extension is located, name should match repo name
 const extensionName = "st-group-utils";
 const EXTENSION_PROMPT_KEY = "ub_grouputils"
-const EXTENSION_PROMPT_KEY_CHAR = "ub_grouputils_char"
 const extensionFolderPath = "scripts/extensions/third-party/SillyBunny-GroupUtilities";
 const settings = {
   char_position: 0,
@@ -115,15 +114,20 @@ async function getText(text) {
   return truncatedText;
 }
 
+function clearGroupUtilsPrompt() {
+  setExtensionPrompt(EXTENSION_PROMPT_KEY, '', extension_prompt_types.IN_CHAT, 0);
+}
 
-async function rearrangeChat(chat = [any]) {
+async function rearrangeChat() {
   try {
     const context = getContext();
     const group = getGroup(context.groupId);
     const generating_name = context.name2;
-    if (!group) return;
-    if (!extension_settings[extensionName].share_character_info) return;
-    await onRearrangeChat(chat)
+    if (!group || !extension_settings[extensionName].share_character_info) {
+      clearGroupUtilsPrompt();
+      return;
+    }
+    const heightNotes = await onRearrangeChat()
 
     let system_notes = [];
     let character_description = [];
@@ -167,20 +171,29 @@ async function rearrangeChat(chat = [any]) {
     if (system_notes.length > 0) {
       pair.push(system_notes.join("\n"));
     }
+    if (heightNotes.length > 0) {
+      pair.push(heightNotes.join("\n"));
+    }
     if (pair.length > 0) {
-      const systemNote = {
-        "name": "System",
-        "is_user": false,
-        "is_system": "",
-        "send_date": new Date(Date.now()).toString(),
-        "mes": pair.join("\n"),
-      };
-      chat.splice(chat.length - settings.depth, 0, systemNote);
-      console.log("Chat Modified!", chat);
+      const position = Number(extension_settings[extensionName].position ?? extension_prompt_types.IN_CHAT);
+      const depth = Number(extension_settings[extensionName].depth ?? settings.depth);
+      const includeWorldInfo = Boolean(extension_settings[extensionName].include_wi);
+
+      setExtensionPrompt(
+        EXTENSION_PROMPT_KEY,
+        pair.join("\n"),
+        Number.isFinite(position) ? position : extension_prompt_types.IN_CHAT,
+        Number.isFinite(depth) ? depth : settings.depth,
+        includeWorldInfo,
+        extension_prompt_roles.SYSTEM,
+      );
+      console.log("Group utility prompt updated!", pair);
     } else {
+      clearGroupUtilsPrompt();
       console.warn("No custom data to import!");
     }
   } catch (e) {
+    clearGroupUtilsPrompt();
     console.log(e);
     toastr.error(e, 'An Error Occurred!');
   }
