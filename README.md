@@ -19,8 +19,7 @@ Upgrading from an older version (please read):
 - Check BOTH extension locations and remove any duplicate copy, then keep only one:
   - public/scripts/extensions/third-party/SillyBunny-GroupUtilities
   - data/user/extensions/SillyBunny-GroupUtilities
-- After reinstalling, do a full refresh of SillyBunny (Ctrl+F5). Just switching chats is not enough.
-- If you ever installed the standalone Presence extension separately, remove it too.
+- After reinstalling, hard refresh the server.
 
 ## Bundled Extensions
 
