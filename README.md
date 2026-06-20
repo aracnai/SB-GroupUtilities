@@ -79,7 +79,7 @@ In the current members list, use the SendAs button for a character to insert a `
 All credit for the original extension ideas and implementations belongs to their upstream authors and contributors:
 
 - [Cohee](https://github.com/Cohee1207)
-- [leandrojofre](https://github.com/leandrojofre)
+- ~~[leandrojofre](https://github.com/leandrojofre)~~
 - [city-unit](https://github.com/city-unit)
 
 This bundle adapts their work for a SillyBunny-focused workflow. Original repositories are linked in the **Bundled Extensions** section above.
