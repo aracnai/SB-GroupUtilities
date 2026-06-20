@@ -4,6 +4,24 @@ SillyBunny Group Utilities is a bundled fork of four group-chat focused SillyTav
 
 This project exists to make group chats in [SillyBunny](https://github.com/platberlitz/SillyBunny) smoother by combining group-specific greetings, shared group context utilities, and quick `/sendas` support without requiring users to install and manage several separate extensions.
 
+## Updates
+
+### Version 1.8
+
+- Removed the Presence module. Presence was saving group chats a second time at the same moment SillyBunny saved them, which caused "Temp file rename failed ... EPERM" errors on Windows and could interrupt chat saving. With Presence gone, those errors stop. The per-message presence indicator icons (the little member avatars at the top of each message) are also removed, since they were part of Presence.
+- Group Greetings, Group Utilities, and Send As are unchanged and continue to work as before.
+- Improved how the extension loads its files so updates apply cleanly instead of running stale cached copies.
+- Removed leftover Presence styling.
+
+Upgrading from an older version (please read):
+
+- Delete your existing "SillyBunny-GroupUtilities" folder and reinstall it fresh. Do not unzip a new copy on top of the old one, or old Presence files can be left behind.
+- Check BOTH extension locations and remove any duplicate copy, then keep only one:
+  - public/scripts/extensions/third-party/SillyBunny-GroupUtilities
+  - data/<your-user>/extensions/SillyBunny-GroupUtilities
+- After reinstalling, do a full refresh of SillyBunny (Ctrl+F5). Just switching chats is not enough.
+- If you ever installed the standalone Presence extension separately, remove it too.
+
 ## Bundled Extensions
 
 This extension is based on and credits the following upstream projects:

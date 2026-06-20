@@ -8,7 +8,7 @@
 // version at all, so after an extension update the browser will keep serving
 // stale cached copies of our modules. Bumping ASSET_VERSION on every release
 // forces a re-fetch. Keep it in sync with manifest.json "version".
-const ASSET_VERSION = "0.1.8";
+const ASSET_VERSION = "1.8";
 
 const bundleState = window.SillyBunnyGroupUtilities ??= {};
 

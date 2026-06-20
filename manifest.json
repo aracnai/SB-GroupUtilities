@@ -6,8 +6,8 @@
     "js": "index.js",
     "css": "style.css",
     "generate_interceptor": "groupUtils_generationInterceptor",
-    "author": "Bundled from Presence, GroupGreetings, st-group-utils, and GroupSendAs",
-    "version": "0.1.8",
-    "homePage": "https://github.com/platberlitz/SillyBunny",
+    "author": "aracnai",
+    "version": "1.8",
+    "homePage": "https://github.com/aracnai/SB-GroupUtilities",
     "auto_update": false
 }
